@@ -2,14 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+
 #define TAM_NOME 50
 #define TAM_CPF 12
 #define TAM_LISTA 20
 
 struct Data{
-    int dia;
-    int mes;
-    int ano;
+    unsigned short dia;
+    unsigned short mes;
+    unsigned short ano;
 };
 
 typedef struct Data Data;
@@ -18,9 +19,8 @@ struct Aluno{
     char nome[TAM_NOME];
     char cpf[TAM_CPF];
     Data dataNascimento;
-    long int matricula;
+    long matricula;
     float notas[4];
-
 };
 
 typedef struct Aluno Aluno;
@@ -37,10 +37,9 @@ int main()
     menu();
 
     return 0;
-
 }
 
- void menu(){
+void menu(){
     int escolha;
     while(escolha != 5){
         printf("-----------------------------\n"
@@ -52,7 +51,7 @@ int main()
         printf("%d: %10s\n", 4, "Alterar aluno\n");
         printf("%d: %10s\n", 5, "Sair do programa\n");
         printf("-----------------------------\n");
-        printf("Escolha uma opção: (1 a 5): ");
+        printf("Escolha uma opï¿½ï¿½o: (1 a 5): ");
         scanf("%d", &escolha);
 
         switch(escolha){
@@ -63,7 +62,7 @@ int main()
             consultar();
             break;
         case 3:
-            //remover();
+            // remover();
             break;
         case 4:
             //alterar();
@@ -72,23 +71,24 @@ int main()
             printf("Encerrando programa...");
             break;
         default:
-            printf("Opção inválida, escolha novamente!\n");
+            printf("Opï¿½ï¿½o invï¿½lida, escolha novamente!\n");
             break;
         }
     }
 }
+
 void cadastrar(){
     FILE *registro;
     Aluno alunos[TAM_LISTA];
     int index = 0;
     char opcao = 'n';
-    if( (registro = fopen("registro-alunos.txt", "a+")) == NULL){
+    if((registro = fopen("registro-alunos.txt", "a+")) == NULL){
         printf("! Ocorreu algum problema ao tentar abrir o arquivo registro-aluno.txt\n");
     }
     else{
         /*
             /// precisa cadastrar notas.
-            /// fazer validação do cpf
+            /// fazer validaï¿½ï¿½o do cpf
         */
         printf("\n-----------------------------------------------------------------------\n");
         printf("                            CADASTRO DE ALUNO:                           \n");
@@ -97,28 +97,61 @@ void cadastrar(){
         printf("-----------------------------------------------------------------------\n");
 
         do{
-        printf("Nome: ");
-        scanf(" %49[^\n]s", alunos[index].nome);
-        printf("cpf: FORMATO(xxxxxxxxxxx) ");
-        scanf(" %11[^\n]s", alunos[index].cpf);
-
-        // validacao do CPF:
-        int ehValido = validarCpf(alunos[index].cpf);
-        while(ehValido == 0){
-            printf("CPF inválido! Digite novamente: ");
+            printf("Nome: ");
+            scanf(" %49[^\n]s", alunos[index].nome);
+            printf("cpf: FORMATO(xxxxxxxxxxx) ");
             scanf(" %11[^\n]s", alunos[index].cpf);
-            ehValido = validarCpf(alunos[index].cpf);
-        }
 
-        printf("Data de Nascimento: FORMATO(dd MM yyyy) ");
-        scanf(" %d%d%d", &alunos[index].dataNascimento.dia, &alunos[index].dataNascimento.mes, &alunos[index].dataNascimento.ano);
-        printf("matricula: ");
-        scanf(" %ld", &alunos[index].matricula);
-        fprintf(registro, "%s%20s%20ld\n", alunos[index].nome, alunos[index].cpf, alunos[index].matricula);
-        index++;
-        printf("continuar cadastro de alunos? FORMATO(s / n) ");
-        scanf(" %c", &opcao);
-        }while((opcao != 'n'));
+            // validacao do CPF:
+            int ehValido = validarCpf(alunos[index].cpf);
+            while(ehValido == 0){
+                printf("CPF invï¿½lido! Digite novamente: ");
+                scanf(" %11[^\n]s", alunos[index].cpf);
+                ehValido = validarCpf(alunos[index].cpf);
+            }
+
+            printf("Data de Nascimento: FORMATO(dd MM yyyy)\n");
+            printf("Dia: ");
+            scanf("%hd", &alunos[index].dataNascimento.dia);
+            printf("MÃªs: ");
+            scanf("%hd", &alunos[index].dataNascimento.mes);
+            printf("Ano: ");
+            scanf("%hd", &alunos[index].dataNascimento.ano);
+
+            printf("Matricula: ");
+            scanf("%ld", &alunos[index].matricula);
+
+            printf("Notas: \n");
+            printf("Primeira nota: ");
+            scanf("%f", &alunos[index].notas[0]);
+            printf("Segunda nota: ");
+            scanf("%f", &alunos[index].notas[1]);
+            printf("Terceira nota: ");
+            scanf("%f", &alunos[index].notas[2]);
+            printf("Quarta nota: ");
+            scanf("%f", &alunos[index].notas[3]);
+
+            fprintf(
+                registro, 
+                "%s %s %ld %hd %hd %hd %.2f %.2f %.2f %.2f\n", 
+                alunos[index].nome, 
+                alunos[index].cpf, 
+                alunos[index].matricula,
+                alunos[index].dataNascimento.dia,
+                alunos[index].dataNascimento.mes,
+                alunos[index].dataNascimento.ano,
+                alunos[index].notas[0],
+                alunos[index].notas[1],
+                alunos[index].notas[2],
+                alunos[index].notas[3]
+            );
+
+            index++;
+
+            printf("continuar cadastro de alunos? FORMATO(s / n)");
+            scanf(" %c", &opcao);
+        } while((opcao != 'n'));
+
         fclose(registro);
     }
 }
@@ -161,7 +194,7 @@ void consultar(){
     FILE *arquivoRead;
     Aluno alunos[TAM_LISTA];
     //int index = 0;
-    if( (arquivoRead = fopen("registro-alunos.txt", "r")) == NULL){
+    if((arquivoRead = fopen("registro-alunos.txt", "r")) == NULL){
         printf("! Ocorreu algum problema ao tentar abrir o arquivo registro-aluno.txt\n");
     }
     else{
@@ -170,7 +203,8 @@ void consultar(){
         printf("-----------------------------------------------------------------------\n");
 
         while(!feof(arquivoRead)){
-            //código referente à leitura do arquivo com os registros dos alunos
+            //cï¿½digo referente ï¿½ leitura do arquivo com os registros dos alunos
+
         }
 
         fclose(arquivoRead);
