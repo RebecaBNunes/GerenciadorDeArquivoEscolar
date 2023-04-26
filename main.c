@@ -56,17 +56,12 @@ void cadastrar(){
     Aluno aluno;
     criarAluno(&aluno);
 
-    char *nomeResto = pegarResto(aluno.nome, NOME_TAMANHO);
-    char *matriculaResto = pegarResto(aluno.matricula, MATRICULA_TAMANHO);
-    
     fprintf(
         arquivo, 
-        "%s%s %s %s%s %.2d %.2d %.4d %.2f %.2f\n", 
+        "%-49s %s %-19s %.2d %.2d %.4d %.2f %.2f\n", 
         aluno.nome,
-        nomeResto,
         aluno.cpf, 
         aluno.matricula,
-        matriculaResto,
         aluno.dataNascimento.tm_mday,
         aluno.dataNascimento.tm_mon,
         aluno.dataNascimento.tm_year,
@@ -74,8 +69,6 @@ void cadastrar(){
         aluno.notas[1]
     );
 
-    free(nomeResto);
-    free(matriculaResto);
     fclose(arquivo);
     esperarInput();
 }

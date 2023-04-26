@@ -8,9 +8,9 @@
 #define CPF_TAMANHO 12
 #define MATRICULA_TAMANHO 20
 #define DATA_TAMANHO 10
-#define DATA_COMECO 86
+#define DATA_COMECO 82
 #define BUFFER_SIZE 1000
-#define LINHA_TAMANHO 107
+#define LINHA_TAMANHO 103
 
 struct Aluno{
     char nome[NOME_TAMANHO];
@@ -27,7 +27,6 @@ void esperarInput();
 void tentarCriarIndice(FILE *arquivo, long *indice, long linhas);
 void criarAluno(Aluno *aluno);
 void formatarAluno(Aluno aluno, char *alunoFormatado);
-char *pegarResto(char *nome, short tamanhoTotal); 
 long pegarArquivoTamanho(FILE *arquivo);
 int pegarIdade(struct tm hoje, struct tm aniversario);
 bool validarCpf(char *cpf);
@@ -98,39 +97,19 @@ void criarAluno(Aluno *aluno) {
 }
 
 void formatarAluno(Aluno aluno, char *alunoFormatado) {
-    char *nomeResto = pegarResto(aluno.nome, NOME_TAMANHO);
-    char *matriculaResto = pegarResto(aluno.matricula, MATRICULA_TAMANHO);
-
     snprintf(
         alunoFormatado, 
         LINHA_TAMANHO, 
-        "%s%s %s %s%s %.2d %.2d %.4d %.2f %.2f\n",
+        "%-49s %s %-19s %.2d %.2d %.4d %.2f %.2f\n",
         aluno.nome,
-        nomeResto,
         aluno.cpf, 
         aluno.matricula,
-        matriculaResto,
         aluno.dataNascimento.tm_mday,
         aluno.dataNascimento.tm_mon,
         aluno.dataNascimento.tm_year,
         aluno.notas[0],
         aluno.notas[1]
     );
-
-    free(nomeResto);
-    free(matriculaResto);
-}
-
-char* pegarResto(char *nome, short tamanhoTotal) {
-	short tamanhoUsado = strlen(nome);
-    short tamanhoResto = tamanhoTotal - tamanhoUsado + 1;
-
-    char *resto = malloc(tamanhoResto);
-
-    for (size_t i = 0; i < tamanhoResto; i++)
-        resto[i] = ' ';
-
-	return resto;
 }
 
 long pegarArquivoTamanho(FILE *arquivo) {
